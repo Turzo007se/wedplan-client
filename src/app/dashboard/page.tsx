@@ -61,10 +61,17 @@ const CATEGORIES = [
 function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialTab = searchParams.get("tab") || "overview";
+  const tab = searchParams.get("tab") || "overview";
+
+  function setTab(nextTab: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (nextTab === "overview") params.delete("tab");
+    else params.set("tab", nextTab);
+    const query = params.toString();
+    router.push(query ? `/dashboard?${query}` : "/dashboard", { scroll: false });
+  }
 
   const [user, setUser] = useState<User | null>(null);
-  const [tab, setTab] = useState(initialTab);
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");

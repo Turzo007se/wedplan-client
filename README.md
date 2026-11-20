@@ -2,6 +2,9 @@
 
 Frontend web application for WedPlan built with **Next.js 15 (App Router)**, **TypeScript**, **Tailwind CSS**, and **ShadCN-style components**.
 
+## Repository Link
+[https://github.com/Turzo007se/wedplan-client](https://github.com/Turzo007se/wedplan-client)
+
 ## Features
 - Fully responsive wedding-themed design with smooth Framer Motion animations.
 - Dynamic homepage with curated hero banner, featured wedding services, category directory, and testimonials.

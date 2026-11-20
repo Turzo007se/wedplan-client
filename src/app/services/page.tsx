@@ -1,5 +1,193 @@
 "use client";
-import {useEffect,useState} from "react";import Link from "next/link";import {Search,MapPin,SlidersHorizontal} from "lucide-react";import {api} from "@/lib/api";import {ServiceCard} from "@/components/ServiceCard";
-type Service={_id:string;serviceName:string;category:string;price:number;location:string;images:string[];vendorName?:string};
-export default function Services(){const [all,setAll]=useState<Service[]>([]),[loading,setLoading]=useState(true),[q,setQ]=useState(""),[cat,setCat]=useState(""),[loc,setLoc]=useState(""),[sort,setSort]=useState("");useEffect(()=>{setCat(new URLSearchParams(window.location.search).get("category")||"");api<{services:Service[]}>('/api/services').then(d=>setAll(d.services||[])).catch(()=>setAll([])).finally(()=>setLoading(false));},[]);let items=all.filter(s=>(!q||s.serviceName.toLowerCase().includes(q.toLowerCase()))&&(!cat||s.category===cat)&&(!loc||s.location.toLowerCase().includes(loc.toLowerCase())));if(sort)items.sort((a,b)=>sort==="asc"?a.price-b.price:b.price-a.price);return <main className="container" style={{padding:"60px 0 90px",minHeight:"65vh"}}><div className="eyebrow">The good stuff</div><h1 className="serif" style={{fontSize:52,fontWeight:400,margin:"10px 0"}}>Find your wedding people</h1><p className="muted" style={{marginBottom:32}}>Browse the talented professionals who can bring your day to life.</p><div style={{display:"grid",gridTemplateColumns:"2fr 1.2fr 1.2fr 1fr",gap:12,background:"var(--cream)",padding:16,borderRadius:8,marginBottom:35}}><label style={{position:"relative"}}><Search size={17} style={{position:"absolute",left:13,top:14,color:"#8b8180"}}/><input className="input" style={{paddingLeft:40}} placeholder="Search services" value={q} onChange={e=>setQ(e.target.value)}/></label><select className="input" value={cat} onChange={e=>setCat(e.target.value)}><option value="">All categories</option>{["Photography & Videography","Wedding Venues","Decoration & Florist","Catering Services","Makeup & Styling","Wedding Fashion"].map(c=><option key={c}>{c}</option>)}</select><label style={{position:"relative"}}><MapPin size={17} style={{position:"absolute",left:13,top:14,color:"#8b8180"}}/><input className="input" style={{paddingLeft:40}} placeholder="Location" value={loc} onChange={e=>setLoc(e.target.value)}/></label><select className="input" value={sort} onChange={e=>setSort(e.target.value)}><option value="">Sort by price</option><option value="asc">Price: low to high</option><option value="desc">Price: high to low</option></select></div>{loading?<div style={{padding:60,textAlign:"center"}}>Finding lovely vendors…</div>:items.length?<div className="grid cards">{items.map(s=><ServiceCard key={s._id} service={s}/>)}</div>:<div style={{padding:"80px 20px",textAlign:"center",background:"var(--cream)",borderRadius:8}}><SlidersHorizontal size={28} color="#b65b69"/><h2 className="serif">No services found just yet</h2><p className="muted">Try adjusting your search or check back soon for new vendors.</p></div>}<style jsx>{`@media(max-width:760px){div[style*="grid-template-columns: 2fr"]{grid-template-columns:1fr 1fr!important}}@media(max-width:480px){div[style*="grid-template-columns: 2fr"]{grid-template-columns:1fr!important}}`}</style></main>}
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { Search, MapPin, SlidersHorizontal, ArrowUpDown, Sparkles, RotateCcw } from "lucide-react";
+import { api } from "@/lib/api";
+import { ServiceCard, ServiceCardData } from "@/components/ServiceCard";
+import { Button } from "@/components/ui/button";
 
+const CATEGORIES = [
+  "Photography & Videography",
+  "Wedding Venues",
+  "Decoration & Florist",
+  "Catering Services",
+  "Makeup & Styling",
+  "Wedding Fashion",
+];
+
+function ServicesContent() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get("category") || "";
+
+  const [services, setServices] = useState<ServiceCardData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [q, setQ] = useState("");
+  const [category, setCategory] = useState(initialCategory);
+  const [location, setLocation] = useState("");
+  const [sort, setSort] = useState("");
+
+  const fetchServices = () => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (q.trim()) params.set("q", q.trim());
+    if (category) params.set("category", category);
+    if (location.trim()) params.set("location", location.trim());
+    if (sort) params.set("sort", sort);
+
+    api<{ services: ServiceCardData[] }>(`/api/services?${params.toString()}`)
+      .then((d) => setServices(d.services || []))
+      .catch(() => setServices([]))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchServices();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [q, category, location, sort]);
+
+  function resetFilters() {
+    setQ("");
+    setCategory("");
+    setLocation("");
+    setSort("");
+  }
+
+  return (
+    <main className="container mx-auto px-4 sm:px-6 py-12 min-h-[75vh]">
+      {/* Header */}
+      <div className="mb-10 text-center sm:text-left">
+        <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#b65b69] mb-2">
+          <Sparkles size={14} /> Curated Wedding Collections
+        </div>
+        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#292526]">
+          Explore Wedding Services
+        </h1>
+        <p className="mt-2 text-sm sm:text-base text-[#777174] max-w-2xl">
+          Discover vetted professionals to bring every dream detail of your celebration to life.
+        </p>
+      </div>
+
+      {/* Advanced Search & Filter Bar */}
+      <div className="mb-10 rounded-2xl border border-[#eee5e1] bg-[#fbf7f3] p-5 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Keyword Search */}
+          <div className="relative">
+            <Search size={16} className="absolute left-3.5 top-3.5 text-[#8b8180]" />
+            <input
+              type="text"
+              placeholder="Search by service or keywords..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="w-full rounded-xl border border-[#ded3cf] bg-white pl-10 pr-4 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+            />
+          </div>
+
+          {/* Category Filter */}
+          <div>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full rounded-xl border border-[#ded3cf] bg-white px-3.5 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+            >
+              <option value="">All Categories</option>
+              {CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Location Filter */}
+          <div className="relative">
+            <MapPin size={16} className="absolute left-3.5 top-3.5 text-[#8b8180]" />
+            <input
+              type="text"
+              placeholder="Filter by city / location..."
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="w-full rounded-xl border border-[#ded3cf] bg-white pl-10 pr-4 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+            />
+          </div>
+
+          {/* Price Sorting */}
+          <div className="relative">
+            <ArrowUpDown size={15} className="absolute left-3.5 top-3.5 text-[#8b8180]" />
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="w-full rounded-xl border border-[#ded3cf] bg-white pl-10 pr-3.5 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+            >
+              <option value="">Sort: Featured First</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Quick Category Chips */}
+        <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-[#ede4e0]">
+          <span className="text-xs font-semibold text-[#777174] mr-1">Popular:</span>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategory(category === cat ? "" : cat)}
+              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                category === cat
+                  ? "bg-[#b65b69] text-white shadow-sm"
+                  : "bg-white text-[#514b4c] border border-[#ded3cf] hover:bg-[#f4ebe6]"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+          {(q || category || location || sort) && (
+            <button
+              onClick={resetFilters}
+              className="ml-auto inline-flex items-center gap-1 text-xs text-[#b65b69] hover:underline cursor-pointer"
+            >
+              <RotateCcw size={12} /> Reset filters
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Services List Display */}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <div key={n} className="h-80 rounded-xl bg-stone-100 animate-pulse border border-stone-200" />
+          ))}
+        </div>
+      ) : services.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {services.map((item) => (
+            <ServiceCard key={item._id} service={item} />
+          ))}
+        </div>
+      ) : (
+        /* Empty State */
+        <div className="rounded-2xl border border-dashed border-[#ded3cf] bg-[#fbf7f3] p-16 text-center">
+          <SlidersHorizontal size={36} className="mx-auto text-[#b65b69] mb-3" />
+          <h2 className="font-serif text-2xl font-bold text-[#292526]">No Services Found</h2>
+          <p className="mt-1 text-sm text-[#777174] max-w-md mx-auto">
+            We couldn't find any approved services matching your current filters. Try adjusting your search keywords or location.
+          </p>
+          <Button variant="outline" className="mt-5" onClick={resetFilters}>
+            Clear All Filters
+          </Button>
+        </div>
+      )}
+    </main>
+  );
+}
+
+export default function ServicesPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto px-4 py-20 text-center text-sm text-[#777174]">Loading services...</div>}>
+      <ServicesContent />
+    </Suspense>
+  );
+}

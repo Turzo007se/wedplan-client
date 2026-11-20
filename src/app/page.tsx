@@ -1,4 +1,410 @@
 "use client";
-import Link from "next/link";import {motion} from "framer-motion";import {ArrowRight,ArrowUpRight,Heart,ShieldCheck,Sparkles,CalendarDays} from "lucide-react";import {useEffect,useState} from "react";import {api} from "@/lib/api";import {ServiceCard} from "@/components/ServiceCard";
-type Service={_id:string;serviceName:string;category:string;price:number;location:string;images:string[];vendorName?:string};
-export default function Home(){const [items,setItems]=useState<Service[]>([]);useEffect(()=>{api<{services:Service[]}>('/api/services?limit=6').then(d=>{setItems(d.services||[])}).catch(()=>{});},[]);return <><section style={{minHeight:590,position:"relative",display:"flex",alignItems:"center",background:"linear-gradient(90deg,#241a18d9 0%,#241a1880 48%,#241a1820 100%),url(https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2200&q=90) center 45%/cover",color:"white"}}><div className="container"><motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:.7}} style={{maxWidth:640}}><div className="eyebrow" style={{color:"#f5c8c8"}}>Your day, your way</div><h1 className="serif" style={{fontSize:"clamp(48px,7vw,76px)",lineHeight:1.03,fontWeight:400,margin:"20px 0"}}>Everything you need<br/>for your <i>forever.</i></h1><p style={{fontSize:18,lineHeight:1.7,color:"#f1e8e5",maxWidth:520}}>Meet the people who make your wedding feel like you. Discover trusted local vendors and make the planning part a little more lovely.</p><Link className="btn" href="/services" style={{marginTop:18}}>Explore wedding services <ArrowRight size={17}/></Link><div style={{display:"flex",gap:24,marginTop:39,fontSize:13,color:"#f5eeeb"}}><span>♡ Thoughtfully curated</span><span>✦ Local professionals</span><span>♡ Made for you</span></div></motion.div></div></section><section className="section"><div className="container"><div className="section-head"><div><div className="eyebrow">A little inspiration</div><h2>Meet your wedding dream team</h2><p className="muted" style={{margin:0}}>Wonderful people, ready to make your day unforgettable.</p></div><Link href="/services" style={{color:"var(--rose)",fontWeight:600}}>See all services <ArrowUpRight size={17} style={{verticalAlign:"middle"}}/></Link></div>{items.length===0&&<p className="muted">New wedding services will appear here as vendors are approved.</p>}<div className="grid cards">{items.slice(0,6).map(s=><ServiceCard key={s._id} service={s}/>)}</div></div></section><section className="section" style={{background:"var(--cream)"}}><div className="container"><div className="section-head"><div><div className="eyebrow">Find your something</div><h2>Every detail, covered</h2></div></div><div className="grid cards">{["Photography & Videography","Wedding Venues","Decoration & Florist","Catering Services","Makeup & Styling","Wedding Fashion"].map((c,i)=><Link key={c} href={`/services?category=${encodeURIComponent(c)}`} style={{background:"white",border:"1px solid var(--line)",borderRadius:8,padding:22,display:"flex",alignItems:"center",justifyContent:"space-between"}}><span><span style={{color:"var(--rose)",marginRight:12}}>{["◉","⌂","✿","♨","✧","◇"][i]}</span>{c}</span><ArrowUpRight size={17} color="#b65b69"/></Link>)}</div></div></section><section className="section" id="how"><div className="container"><div className="section-head"><div><div className="eyebrow">The WedPlan difference</div><h2>Planning that feels like you</h2><p className="muted">A thoughtful way to find your people and bring your vision to life.</p></div></div><div className="grid cards">{[[Heart,"Find people you love","Discover talented local professionals, all in one lovely place."],[ShieldCheck,"Book with confidence","Clear details and direct booking requests keep you in control."],[Sparkles,"Make it yours","Save your favorites, share your vision, and create a day that feels like you."]].map(([Icon,title,desc]:any)=><div key={title} style={{padding:28,border:"1px solid var(--line)",borderRadius:9}}><Icon size={25} color="#b65b69"/><h3 className="serif" style={{fontSize:25,marginBottom:7}}>{title}</h3><p className="muted" style={{lineHeight:1.7}}>{desc}</p></div>)}</div><div style={{marginTop:50}}><div className="eyebrow">Simple and personal</div><h2 className="serif">How WedPlan works</h2><div className="grid cards"><div style={{padding:22,border:'1px solid var(--line)',borderRadius:9}}><div className="eyebrow">01</div><h3 className="serif">Discover your people</h3><p className="muted">Explore approved local wedding professionals by category and location.</p></div><div style={{padding:22,border:'1px solid var(--line)',borderRadius:9}}><div className="eyebrow">02</div><h3 className="serif">Share your plans</h3><p className="muted">Choose a date, tell the vendor where you are celebrating, and send a note.</p></div><div style={{padding:22,border:'1px solid var(--line)',borderRadius:9}}><div className="eyebrow">03</div><h3 className="serif">Connect and celebrate</h3><p className="muted">Track the request from your dashboard and continue planning together.</p></div></div></div><div style={{marginTop:48,background:"#f6eeeb",padding:"35px 40px",borderRadius:10,display:"flex",justifyContent:"space-between",alignItems:"center",gap:20}}><div><div className="eyebrow">For the ones who make it happen</div><h3 className="serif" style={{fontSize:30,margin:"8px 0"}}>Are you a wedding professional?</h3><p className="muted" style={{margin:0}}>Let couples find your work and book with you.</p></div><Link className="btn" href="/sign-up">Join as a vendor <ArrowRight size={16}/></Link></div></div></section></>}
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Heart,
+  ShieldCheck,
+  Sparkles,
+  CalendarDays,
+  Camera,
+  Building2,
+  Flower2,
+  Utensils,
+  Sparkle,
+  Shirt,
+  CheckCircle2,
+  Star,
+  Clock,
+  Award
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
+import { ServiceCard, ServiceCardData } from "@/components/ServiceCard";
+import { Button } from "@/components/ui/button";
+
+const CATEGORIES = [
+  { name: "Photography & Videography", icon: Camera, desc: "Capture every timeless glance & tear" },
+  { name: "Wedding Venues", icon: Building2, desc: "Romantic gardens, ballrooms & resorts" },
+  { name: "Decoration & Florist", icon: Flower2, desc: "Bespoke floral styling & dreamy stages" },
+  { name: "Catering Services", icon: Utensils, desc: "Gourmet dining & artisanal dessert tables" },
+  { name: "Makeup & Styling", icon: Sparkle, desc: "Flawless bridal glam & relaxing trials" },
+  { name: "Wedding Fashion", icon: Shirt, desc: "Custom bridal wear, sarees & tuxedos" },
+];
+
+const TESTIMONIALS = [
+  {
+    quote: "WedPlan made finding our venue and photographer completely stress-free. The booking requests were answered promptly and communication was seamless!",
+    author: "Nabila & Farhan",
+    location: "Celebrated in Dhaka",
+    rating: 5,
+  },
+  {
+    quote: "As a floral designer, upgrading to WedPlan Premium gave my studio immense visibility. We booked 14 weddings in our very first season!",
+    author: "Tariqul Islam (Floral Vendor)",
+    location: "Petal & Pine Studios",
+    rating: 5,
+  },
+  {
+    quote: "The transparent pricing and verified profiles gave us peace of mind. Every detail of our wedding catering turned out delicious and magical.",
+    author: "Sarah & David",
+    location: "Celebrated in Chattogram",
+    rating: 5,
+  },
+];
+
+const TIPS = [
+  {
+    title: "12-Month Wedding Timeline",
+    description: "When to secure your key venue, photographer, and bridal attire without stress.",
+    tag: "Planning Guide",
+  },
+  {
+    title: "Crafting a Cohesive Floral Palette",
+    description: "How to match season blooms with your wedding attire and evening lighting.",
+    tag: "Floral & Decor",
+  },
+  {
+    title: "Essential Questions for Caterers",
+    description: "Tastings, dietary accommodations, and live station logistics to discuss early.",
+    tag: "Catering",
+  },
+];
+
+export default function HomePage() {
+  const [featured, setFeatured] = useState<ServiceCardData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api<{ services: ServiceCardData[] }>("/api/services?limit=6")
+      .then((d) => setFeatured(d.services || []))
+      .catch(() => setFeatured([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <div className="space-y-24 pb-12">
+      {/* 1. Hero Banner Section */}
+      <section className="relative min-h-[640px] flex items-center justify-center overflow-hidden bg-[#1e191a] text-white">
+        {/* Background Image with Gradient Overlay */}
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgba(30, 25, 26, 0.92) 0%, rgba(30, 25, 26, 0.72) 50%, rgba(30, 25, 26, 0.45) 100%), url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2200&q=90')",
+          }}
+        />
+
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-2xl space-y-6"
+          >
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs font-semibold tracking-wider uppercase text-[#f5c8c8] backdrop-blur-md">
+              <Sparkles size={14} /> The Premier Wedding Network
+            </div>
+
+            <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
+              Plan Your Dream Wedding With Trusted Professionals.
+            </h1>
+
+            <p className="text-base sm:text-lg text-[#f1e8e5] leading-relaxed max-w-xl">
+              Connect with top-rated wedding venues, photographers, caterers, decorators, and stylists. Request bookings directly and track your plans with ease.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <Link href="/services">
+                <Button size="lg" className="h-13 px-8 text-base font-semibold shadow-xl">
+                  Explore Wedding Services <ArrowRight size={18} />
+                </Button>
+              </Link>
+              <Link href="/sign-up">
+                <Button variant="outline" size="lg" className="h-13 px-7 text-base font-semibold bg-white/10 text-white border-white/30 hover:bg-white/20">
+                  Join as a Vendor
+                </Button>
+              </Link>
+            </div>
+
+            {/* Highlights */}
+            <div className="flex flex-wrap gap-6 pt-6 text-xs text-[#f5eeeb]">
+              <span className="flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-[#f5c8c8]" /> Verified Professionals
+              </span>
+              <span className="flex items-center gap-2">
+                <ShieldCheck size={16} className="text-[#f5c8c8]" /> Transparent Pricing
+              </span>
+              <span className="flex items-center gap-2">
+                <Award size={16} className="text-[#f5c8c8]" /> Direct Booking Inquiries
+              </span>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 2. Dynamic Section 1: Featured Wedding Services */}
+      <section className="container mx-auto px-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
+          <div>
+            <div className="text-xs font-bold uppercase tracking-widest text-[#b65b69] mb-1">
+              Curated Highlights
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#292526]">
+              Featured Wedding Services
+            </h2>
+            <p className="text-sm text-[#777174] mt-1">
+              Explore handpicked, verified services from our top wedding specialists.
+            </p>
+          </div>
+          <Link
+            href="/services"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#b65b69] hover:underline"
+          >
+            Browse all services <ArrowUpRight size={16} />
+          </Link>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-80 rounded-xl bg-stone-100 animate-pulse border border-stone-200" />
+            ))}
+          </div>
+        ) : featured.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {featured.slice(0, 6).map((service) => (
+              <ServiceCard key={service._id} service={service} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-[#ded3cf] bg-[#fbf7f3] p-12 text-center text-[#777174]">
+            New wedding services are being reviewed by administrators and will appear here shortly.
+          </div>
+        )}
+      </section>
+
+      {/* 3. Dynamic Section 2: Wedding Service Categories */}
+      <section className="bg-[#fbf7f3] py-20 border-y border-[#eee5e1]">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center max-w-xl mx-auto mb-12">
+            <div className="text-xs font-bold uppercase tracking-widest text-[#b65b69] mb-1">
+              Complete Categories
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#292526]">
+              Explore by Wedding Category
+            </h2>
+            <p className="text-sm text-[#777174] mt-2">
+              Browse tailored offerings across every essential discipline of your big day.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {CATEGORIES.map((cat, idx) => {
+              const Icon = cat.icon;
+              return (
+                <Link
+                  key={cat.name}
+                  href={`/services?category=${encodeURIComponent(cat.name)}`}
+                  className="group flex items-start gap-4 rounded-xl border border-[#ded3cf] bg-white p-6 shadow-sm hover:border-[#b65b69] hover:shadow-md hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#fbf0f2] text-[#b65b69] group-hover:bg-[#b65b69] group-hover:text-white transition-colors">
+                    <Icon size={24} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-serif text-lg font-semibold text-[#292526] group-hover:text-[#b65b69] transition-colors">
+                        {cat.name}
+                      </h3>
+                      <ArrowUpRight size={16} className="text-[#777174] opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <p className="text-xs text-[#777174] mt-1 leading-relaxed">{cat.desc}</p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Why Choose WedPlan? (Required Section) */}
+      <section id="why" className="container mx-auto px-4 sm:px-6">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="text-xs font-bold uppercase tracking-widest text-[#b65b69] mb-1">
+            The WedPlan Difference
+          </div>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#292526]">
+            Why Couples & Vendors Choose Us
+          </h2>
+          <p className="text-sm text-[#777174] mt-2">
+            A secure, role-based platform built to remove the chaos of wedding vendor coordination.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="rounded-2xl border border-[#eee5e1] bg-white p-8 shadow-sm space-y-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#fbf0f2] text-[#b65b69]">
+              <ShieldCheck size={26} />
+            </div>
+            <h3 className="font-serif text-xl font-semibold text-[#292526]">Verified Quality Vendors</h3>
+            <p className="text-sm text-[#777174] leading-relaxed">
+              Every vendor profile and service undergoes administrative review before appearing in public listings, guaranteeing authentic portfolios and professional standards.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-[#eee5e1] bg-white p-8 shadow-sm space-y-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#fbf0f2] text-[#b65b69]">
+              <CalendarDays size={26} />
+            </div>
+            <h3 className="font-serif text-xl font-semibold text-[#292526]">Direct Booking Tracking</h3>
+            <p className="text-sm text-[#777174] leading-relaxed">
+              Submit your desired date and venue location directly to the vendor. Receive status updates (Accepted, Rejected, Pending) directly inside your private dashboard.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-[#eee5e1] bg-white p-8 shadow-sm space-y-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#fbf0f2] text-[#b65b69]">
+              <Sparkles size={26} />
+            </div>
+            <h3 className="font-serif text-xl font-semibold text-[#292526]">Fair Tiered Growth</h3>
+            <p className="text-sm text-[#777174] leading-relaxed">
+              Vendors enjoy a free tier to publish up to 3 active services, with seamless Stripe-backed Premium upgrades for unlimited listings and verified badges.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. How WedPlan Works Section */}
+      <section id="how" className="bg-[#fbf7f3] py-20 border-y border-[#eee5e1]">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center max-w-xl mx-auto mb-14">
+            <div className="text-xs font-bold uppercase tracking-widest text-[#b65b69] mb-1">
+              Easy 3-Step Process
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#292526]">
+              How WedPlan Works
+            </h2>
+            <p className="text-sm text-[#777174] mt-2">
+              From discovery to confirmation, planning your wedding has never been smoother.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="relative rounded-2xl border border-[#ded3cf] bg-white p-8">
+              <span className="font-serif text-4xl font-bold text-[#b65b69]/20 absolute top-6 right-6">
+                01
+              </span>
+              <h3 className="font-serif text-xl font-bold text-[#292526] mb-2">Explore & Discover</h3>
+              <p className="text-sm text-[#777174] leading-relaxed">
+                Filter by category, wedding venue location, and price. View high-resolution galleries and transparent base prices.
+              </p>
+            </div>
+
+            <div className="relative rounded-2xl border border-[#ded3cf] bg-white p-8">
+              <span className="font-serif text-4xl font-bold text-[#b65b69]/20 absolute top-6 right-6">
+                02
+              </span>
+              <h3 className="font-serif text-xl font-bold text-[#292526] mb-2">Send Booking Request</h3>
+              <p className="text-sm text-[#777174] leading-relaxed">
+                Select your celebration date, input your wedding venue, and send a personalized note to the vendor without any upfront charges.
+              </p>
+            </div>
+
+            <div className="relative rounded-2xl border border-[#ded3cf] bg-white p-8">
+              <span className="font-serif text-4xl font-bold text-[#b65b69]/20 absolute top-6 right-6">
+                03
+              </span>
+              <h3 className="font-serif text-xl font-bold text-[#292526] mb-2">Confirm & Celebrate</h3>
+              <p className="text-sm text-[#777174] leading-relaxed">
+                Vendors review and accept requests in their dashboard. Track all confirmed bookings in your customer dashboard in one place.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Customer Testimonials */}
+      <section className="container mx-auto px-4 sm:px-6">
+        <div className="text-center max-w-xl mx-auto mb-14">
+          <div className="text-xs font-bold uppercase tracking-widest text-[#b65b69] mb-1">
+            Love Letters
+          </div>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#292526]">
+            Couples & Vendors Love WedPlan
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {TESTIMONIALS.map((t, idx) => (
+            <div key={idx} className="rounded-2xl border border-[#eee5e1] bg-white p-8 shadow-sm flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex gap-1 text-amber-400">
+                  {[...Array(t.rating)].map((_, i) => (
+                    <Star key={i} size={16} fill="currentColor" />
+                  ))}
+                </div>
+                <p className="text-sm text-[#514b4c] italic leading-relaxed">"{t.quote}"</p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-[#eee5e1]">
+                <p className="font-semibold text-sm text-[#292526]">{t.author}</p>
+                <p className="text-xs text-[#777174]">{t.location}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 7. Wedding Planning Tips */}
+      <section className="container mx-auto px-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
+          <div>
+            <div className="text-xs font-bold uppercase tracking-widest text-[#b65b69] mb-1">
+              Helpful Guides
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#292526]">
+              Wedding Planning Tips
+            </h2>
+          </div>
+          <Link href="/services" className="text-sm font-semibold text-[#b65b69] hover:underline">
+            Read more advice
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {TIPS.map((tip, idx) => (
+            <div key={idx} className="rounded-xl border border-[#eee5e1] bg-white p-6 shadow-sm hover:shadow-md transition-all">
+              <span className="inline-block rounded bg-[#f4ebe6] px-2.5 py-0.5 text-xs font-semibold text-[#8f3e4d] mb-3">
+                {tip.tag}
+              </span>
+              <h3 className="font-serif text-lg font-bold text-[#292526] mb-2">{tip.title}</h3>
+              <p className="text-sm text-[#777174] leading-relaxed">{tip.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 8. Vendor Callout CTA */}
+      <section className="container mx-auto px-4 sm:px-6">
+        <div className="rounded-3xl bg-gradient-to-r from-[#292526] to-[#3a3435] text-white p-10 sm:p-14 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
+          <div className="space-y-3 max-w-xl text-center md:text-left">
+            <span className="text-xs font-bold tracking-widest uppercase text-[#d9959d]">
+              Grow Your Wedding Business
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white">
+              Are You a Professional Wedding Vendor?
+            </h2>
+            <p className="text-sm text-[#c9c0c0] leading-relaxed">
+              Showcase your portfolio, receive organized booking requests, and connect with couples actively planning their weddings.
+            </p>
+          </div>
+          <Link href="/sign-up">
+            <Button size="lg" className="h-13 px-8 text-base font-semibold whitespace-nowrap shadow-lg">
+              Join WedPlan as a Vendor <ArrowRight size={18} />
+            </Button>
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
+}

@@ -2,6 +2,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api, uploadImage } from "@/lib/api";
+import { ChangePassword } from "@/components/ChangePassword";
 import { Toast } from "@/components/Shell";
 import { authClient, cacheApiToken, clearApiToken, getApiToken } from "@/lib/auth-client";
 import {
@@ -1508,6 +1509,7 @@ function DashboardContent() {
                     <p className="text-xs text-muted mt-0.5">Update your personal account information and avatar</p>
                   </div>
                   <ProfileEditor user={user} onSaved={(msg) => { setNoticeType("success"); setNotice(msg); loadUser(); }} />
+                  <ChangePassword key={user.id} />
                   <DeleteAccount user={user} />
                 </div>
               )}

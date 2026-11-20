@@ -30,3 +30,12 @@ npm run start   # Starts production Next.js server
 Configured in `.env.local`:
 - `NEXT_PUBLIC_API_URL`: Backend API base URL (`http://localhost:4000`)
 - `NEXT_PUBLIC_AUTH_URL`: Better Auth base URL (`http://localhost:4000`)
+
+## Evaluator test instructions
+
+1. Open the [live WedPlan site](https://wedplan-client-amber.vercel.app), choose **Sign Up**, and register a new account with the **Vendor** role.
+2. In **Dashboard > Subscription**, choose **Upgrade to Premium**.
+3. Confirm Stripe Checkout displays **Sandbox** or **Test mode**. Use Stripe's test card `4242 4242 4242 4242`, a future expiry date, and any three-digit CVC. If Checkout asks for a US ZIP code, use `10001`.
+4. After payment, wait for WedPlan to show **Premium activated**. Open **Dashboard > Subscription** to confirm the vendor is on Premium. An evaluator signed in as admin can also confirm the payment in **Dashboard > Transactions**.
+
+Share the evaluation admin credentials privately through the submission form.

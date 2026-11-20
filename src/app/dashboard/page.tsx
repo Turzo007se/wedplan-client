@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { api } from "@/lib/api";
+import { api, uploadImage } from "@/lib/api";
 import { Toast } from "@/components/Shell";
 import { authClient, cacheApiToken, clearApiToken, getApiToken } from "@/lib/auth-client";
 import {
@@ -222,22 +222,10 @@ function DashboardContent() {
 
     setUploadingImage(true);
     try {
-      const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || "54bc04aacbbf4637154f95bac08b407f";
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-        method: "POST",
-        body: formData,
-      });
-      const d = await res.json();
-      if (d.success && d.data?.url) {
-        setServiceImages((prev) => [...prev, d.data.url]);
-        setNoticeType("success");
-        setNotice("Image uploaded successfully!");
-      } else {
-        throw new Error(d.error?.message || "Image upload failed");
-      }
+      const url = await uploadImage(file);
+      setServiceImages((prev) => [...prev, url]);
+      setNoticeType("success");
+      setNotice("Image uploaded successfully!");
     } catch (err: any) {
       setNoticeType("error");
       setNotice(err.message || "Failed to upload image.");
@@ -1730,22 +1718,10 @@ function ProfileEditor({ user, onSaved }: { user: User; onSaved: (msg: string) =
     if (!file) return;
     setUploading(true);
     try {
-      const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || "54bc04aacbbf4637154f95bac08b407f";
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-        method: "POST",
-        body: formData,
-      });
-      const d = await res.json();
-      if (d.success && d.data?.url) {
-        setImageUrl(d.data.url);
-        setImagePreview(d.data.url);
-        onSaved("Avatar uploaded! Remember to click Save Profile.");
-      } else {
-        throw new Error("Upload failed.");
-      }
+      const url = await uploadImage(file);
+      setImageUrl(url);
+      setImagePreview(url);
+      onSaved("Avatar uploaded! Remember to click Save Profile.");
     } catch (e: any) {
       onSaved(e.message || "Failed to upload avatar.");
     } finally {

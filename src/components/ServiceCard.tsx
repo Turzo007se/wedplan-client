@@ -12,6 +12,7 @@ export type ServiceCardData = {
   location: string;
   images: string[];
   vendorName?: string;
+  vendorPremium?: boolean;
 };
 
 export function ServiceCard({ service }: { service: ServiceCardData }) {
@@ -67,6 +68,7 @@ export function ServiceCard({ service }: { service: ServiceCardData }) {
           <p className="mt-1 text-xs text-[#777174]">
             by <span className="font-medium text-[#292526]">{service.vendorName || "Wedding Professional"}</span>
           </p>
+          {service.vendorPremium && <Badge variant="premium" className="mt-2">Premium Vendor</Badge>}
         </div>
 
         {/* Foot: Price & View Details CTA */}

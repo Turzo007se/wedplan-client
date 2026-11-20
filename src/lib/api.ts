@@ -2,7 +2,7 @@ import {getApiToken,cacheApiToken} from "@/lib/auth-client";
 export const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 export async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = typeof window !== "undefined" ? await getApiToken() : null;
-  const send=(value:string|null)=>{const headers=new Headers(options.headers);headers.set("Content-Type","application/json");if(value)headers.set("Authorization",`Bearer ${value}`);return fetch(`${API}${path}`, { ...options, headers, cache: "no-store",credentials:"include" })};
+  const send=(value:string|null)=>{const headers=new Headers(options.headers);if (!(options.body instanceof FormData)) headers.set("Content-Type","application/json");if(value)headers.set("Authorization",`Bearer ${value}`);return fetch(`${API}${path}`, { ...options, headers, cache: "no-store",credentials:"include" })};
   let response = await send(token);
   if(response.status===401&&typeof window!=="undefined"){
     try{await cacheApiToken();const renewed=await getApiToken();if(renewed)response=await send(renewed)}catch{}
@@ -10,4 +10,11 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(body.message || "Something went wrong. Please try again.");
   return body as T;
+}
+
+export async function uploadImage(file: File): Promise<string> {
+  const body = new FormData();
+  body.append("image", file);
+  const { url } = await api<{ url: string }>("/api/uploads/image", { method: "POST", body });
+  return url;
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Heart, Sparkles, ImagePlus, Loader2, CheckCircle2 } from "lucide-react";
 import { authClient, cacheApiToken } from "@/lib/auth-client";
+import { api, uploadImage } from "@/lib/api";
 import { Toast } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 
@@ -16,8 +17,6 @@ export default function SignUpPage() {
   const [role, setRole] = useState("customer");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
@@ -38,31 +37,7 @@ export default function SignUpPage() {
 
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
-    setUploadingImage(true);
     setError("");
-
-    try {
-      const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || "54bc04aacbbf4637154f95bac08b407f";
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.success && data.data?.url) {
-        setImageUrl(data.data.url);
-        setNotice("Profile photo uploaded successfully!");
-      } else {
-        throw new Error("ImgBB upload failed.");
-      }
-    } catch {
-      // Fallback: If ImgBB fails or rate-limits, we keep local preview and let user continue
-      console.warn("ImgBB upload could not complete, continuing without remote URL.");
-    } finally {
-      setUploadingImage(false);
-    }
   }
 
   // Password validation: minimum 6 chars, 1 uppercase, 1 lowercase
@@ -90,7 +65,6 @@ export default function SignUpPage() {
         email: email.trim().toLowerCase(),
         password,
         role: role === "vendor" ? "vendor" : "customer",
-        image: imageUrl || undefined,
         callbackURL: "/dashboard",
       };
 
@@ -102,6 +76,18 @@ export default function SignUpPage() {
       }
 
       await cacheApiToken();
+      if (imageFile) {
+        try {
+          const image = await uploadImage(imageFile);
+          await api("/api/me", { method: "PATCH", body: JSON.stringify({ name: payload.name, image }) });
+        } catch (error) {
+          setError(error instanceof Error ? error.message : "Profile photo upload failed.");
+          setNotice("Account created. You can retry the photo upload in Profile Settings.");
+          window.dispatchEvent(new Event("auth-changed"));
+          setTimeout(() => router.push("/dashboard?tab=profile"), 1800);
+          return;
+        }
+      }
       window.dispatchEvent(new Event("auth-changed"));
       setNotice("Account created successfully! Redirecting...");
       setTimeout(() => {
@@ -234,17 +220,13 @@ export default function SignUpPage() {
                     onChange={handleImageChange}
                     className="text-xs text-[#777174] file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#f4ebe6] file:text-[#8f3e4d] hover:file:bg-[#eee1dc] cursor-pointer"
                   />
-                  {uploadingImage && (
-                    <p className="text-[11px] text-[#b65b69] flex items-center gap-1 mt-1">
-                      <Loader2 size={12} className="animate-spin" /> Uploading image to hosting...
-                    </p>
-                  )}
+
                 </div>
               </div>
             </div>
 
             {/* Submit Button */}
-            <Button type="submit" disabled={busy || uploadingImage} className="w-full h-11 text-base font-semibold mt-2">
+            <Button type="submit" disabled={busy} className="w-full h-11 text-base font-semibold mt-2">
               {busy ? "Creating Account..." : "Create Account"}
             </Button>
 

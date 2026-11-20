@@ -5,6 +5,8 @@ Frontend web application for WedPlan built with **Next.js 15 (App Router)**, **T
 ## Repository Link
 [https://github.com/Turzo007se/wedplan-client](https://github.com/Turzo007se/wedplan-client)
 
+[Live site](https://wedplan-client-amber.vercel.app)
+
 ## Features
 - Fully responsive wedding-themed design with smooth Framer Motion animations.
 - Dynamic homepage with curated hero banner, featured wedding services, category directory, and testimonials.
@@ -28,4 +30,3 @@ npm run start   # Starts production Next.js server
 Configured in `.env.local`:
 - `NEXT_PUBLIC_API_URL`: Backend API base URL (`http://localhost:4000`)
 - `NEXT_PUBLIC_AUTH_URL`: Better Auth base URL (`http://localhost:4000`)
-- `NEXT_PUBLIC_IMGBB_API_KEY`: ImgBB API key for client-side uploads

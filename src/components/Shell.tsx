@@ -379,8 +379,8 @@ export function Footer() {
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-brand transition-colors">
                 Facebook
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-brand transition-colors">
-                Twitter
+              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-brand transition-colors">
+                X
               </a>
             </div>
           </div>

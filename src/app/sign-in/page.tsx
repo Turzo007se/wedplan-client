@@ -6,6 +6,7 @@ import { Heart, CheckCircle2 } from "lucide-react";
 import { authClient, cacheApiToken } from "@/lib/auth-client";
 import { api } from "@/lib/api";
 import { Toast } from "@/components/Shell";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 
 function SignInContent() {
@@ -113,15 +114,14 @@ function SignInContent() {
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-semibold text-ink">Password</label>
+                <label htmlFor="sign-in-password" className="block text-xs font-semibold text-ink">Password</label>
               </div>
-              <input
-                type="password"
+              <PasswordInput
+                id="sign-in-password"
+                autoComplete="current-password"
                 required
-                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-outline px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
               />
             </div>
 

@@ -31,6 +31,7 @@ import {
   ToggleRight,
   Filter
 } from "lucide-react";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -1874,12 +1875,13 @@ function DeleteAccount({ user }: { user: User }) {
             {user.role === "vendor" && " Your services will be removed from public listings."}
             {user.subscriptionPlan === "premium" && " Your Premium subscription will end immediately."}
           </p>
-          <label className="block text-sm font-medium text-ink">
-            Current password, if you sign in with a password
-            <input type="password" autoComplete="current-password" value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="mt-1 block w-full rounded-lg border border-outline bg-surface px-3 py-2 text-ink" />
-          </label>
+          <div className="space-y-1">
+            <label htmlFor="delete-account-password" className="block text-sm font-medium text-ink">
+              Current password, if you sign in with a password
+            </label>
+            <PasswordInput id="delete-account-password" autoComplete="current-password" value={password}
+              onChange={(event) => setPassword(event.target.value)} disabled={busy} />
+          </div>
           <p className="text-xs text-muted">If you use Google and your session has expired, sign in again before deleting your account.</p>
           {error && <p role="alert" className="text-sm text-danger">{error}</p>}
           <div className="flex flex-wrap justify-end gap-2">

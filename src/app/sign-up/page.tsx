@@ -6,6 +6,7 @@ import { Heart, Sparkles, ImagePlus, Loader2, CheckCircle2 } from "lucide-react"
 import { authClient, cacheApiToken } from "@/lib/auth-client";
 import { api, uploadImage } from "@/lib/api";
 import { Toast } from "@/components/Shell";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 
 export default function SignUpPage() {
@@ -170,16 +171,15 @@ export default function SignUpPage() {
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-semibold text-ink mb-1">
+              <label htmlFor="sign-up-password" className="block text-xs font-semibold text-ink mb-1">
                 Password * (min 6 chars, 1 uppercase, 1 lowercase)
               </label>
-              <input
-                type="password"
+              <PasswordInput
+                id="sign-up-password"
+                autoComplete="new-password"
                 required
-                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-outline px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
               />
             </div>
 

@@ -354,7 +354,7 @@ export function Footer() {
               Contact Us
             </h4>
             <div className="space-y-2.5 text-sm text-[#b8b0b1]">
-              <p>Email: support@wedplan.example</p>
+              <p>Email: <a href="mailto:support@wedplan.com" className="hover:text-white">support@wedplan.com</a></p>
               <p>Phone: +880 1700-000000</p>
               <p>Location: Gulshan-2, Dhaka 1212, Bangladesh</p>
               <p>Hours: Mon - Sat (9:00 AM - 8:00 PM)</p>

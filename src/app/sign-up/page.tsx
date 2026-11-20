@@ -241,7 +241,7 @@ export default function SignUpPage() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" })}
+              onClick={() => authClient.signIn.social({ provider: "google", callbackURL: new URL("/dashboard", window.location.origin).href })}
               className="w-full h-11"
             >
               <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">

@@ -11,7 +11,10 @@ import { Button } from "@/components/ui/button";
 function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get("redirect") || "/dashboard";
+  const requestedRedirect = searchParams.get("redirect");
+  const redirectPath = requestedRedirect && /^\/(?![\/\\])/.test(requestedRedirect) && !/[\\\u0000-\u001f]/.test(requestedRedirect)
+    ? requestedRedirect
+    : "/dashboard";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -136,7 +139,7 @@ function SignInContent() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => authClient.signIn.social({ provider: "google", callbackURL: redirectPath })}
+              onClick={() => authClient.signIn.social({ provider: "google", callbackURL: new URL(redirectPath, window.location.origin).href })}
               className="w-full h-11"
             >
               <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">

@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function PaymentCancel(){return <main className="container" style={{padding:"100px 0",textAlign:"center",minHeight:"60vh"}}><div className="eyebrow">No worries</div><h1 className="serif" style={{fontSize:48,fontWeight:400}}>Checkout was cancelled.</h1><p className="muted" style={{maxWidth:500,margin:"0 auto 28px",lineHeight:1.8}}>Your current plan is unchanged. You can return to the subscription page whenever you’re ready.</p><Link className="btn" href="/dashboard">Back to dashboard</Link></main>}

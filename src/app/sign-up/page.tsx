@@ -132,7 +132,7 @@ export default function SignUpPage() {
         </div>
 
         {/* Right Side: Form Card */}
-        <div className="rounded-2xl border border-line bg-surface p-8 shadow-xl">
+        <div className="min-w-0 rounded-2xl border border-line bg-surface p-5 shadow-xl sm:p-8">
           <h2 className="font-serif text-2xl font-bold text-ink">Create Your Account</h2>
           <p className="text-xs text-muted mt-1 mb-6">Enter your details to register on WedPlan</p>
 
@@ -213,12 +213,12 @@ export default function SignUpPage() {
                     <ImagePlus size={20} />
                   </div>
                 )}
-                <div className="flex-1">
+                <div className="min-w-0 flex-1">
                   <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
                     onChange={handleImageChange}
-                    className="text-xs text-muted file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-raised file:text-accent-strong hover:file:bg-raised cursor-pointer"
+                    className="w-full min-w-0 text-xs text-muted file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-raised file:text-accent-strong hover:file:bg-raised cursor-pointer"
                   />
 
                 </div>

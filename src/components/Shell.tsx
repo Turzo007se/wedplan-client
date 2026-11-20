@@ -2,40 +2,9 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Heart, Menu, X, UserRound, LogOut, LayoutDashboard, Settings, ChevronDown, CheckCircle2, AlertCircle, Monitor, Sun, Moon } from "lucide-react";
+import { Heart, Menu, X, UserRound, LogOut, LayoutDashboard, Settings, ChevronDown, CheckCircle2, AlertCircle } from "lucide-react";
 import { authClient, cacheApiToken, clearApiToken } from "@/lib/auth-client";
 import { api } from "@/lib/api";
-
-function ThemePicker() {
-  const [theme, setTheme] = useState("system");
-
-  useEffect(() => {
-    setTheme(document.documentElement.dataset.theme ?? "system");
-  }, []);
-
-  function changeTheme(value: string) {
-    setTheme(value);
-    if (value === "system") delete document.documentElement.dataset.theme;
-    else document.documentElement.dataset.theme = value;
-    try {
-      if (value === "system") localStorage.removeItem("wedplan-theme");
-      else localStorage.setItem("wedplan-theme", value);
-    } catch {}
-  }
-
-  const Icon = theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
-
-  return (
-    <label className="flex h-10 items-center gap-1.5 rounded-lg border border-outline bg-surface px-2 text-ink">
-      <Icon size={16} aria-hidden="true" />
-      <select aria-label="Color theme" value={theme} onChange={(event) => changeTheme(event.target.value)} className="bg-surface py-1 text-xs font-medium">
-        <option value="system">System</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </select>
-    </label>
-  );
-}
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -200,17 +169,14 @@ export function Header() {
           )}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <ThemePicker />
-          <button
+        <button
           type="button"
           className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg border border-line text-ink"
           onClick={() => setOpen(!open)}
           aria-label="Toggle navigation menu"
         >
           {open ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
+        </button>
       </div>
 
       {/* Mobile Drawer */}

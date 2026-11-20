@@ -13,6 +13,7 @@ interface ModalProps {
 }
 
 export function Modal({ isOpen, onClose, title, description, children, className }: ModalProps) {
+  const titleId = React.useId();
   React.useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
@@ -32,8 +33,11 @@ export function Modal({ isOpen, onClose, title, description, children, className
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in-0 duration-200">
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
         className={cn(
-          "relative w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl border border-[#eee5e1] max-h-[90vh] overflow-y-auto",
+          "relative w-full max-w-lg rounded-xl bg-surface p-6 shadow-2xl border border-line max-h-[90vh] overflow-y-auto",
           className
         )}
       >
@@ -45,8 +49,8 @@ export function Modal({ isOpen, onClose, title, description, children, className
           <span className="sr-only">Close</span>
         </button>
         <div className="mb-4">
-          <h2 className="text-2xl font-serif font-medium text-[#292526]">{title}</h2>
-          {description && <p className="text-sm text-[#777174] mt-1">{description}</p>}
+          <h2 id={titleId} className="text-2xl font-serif font-medium text-ink">{title}</h2>
+          {description && <p className="text-sm text-muted mt-1">{description}</p>}
         </div>
         <div>{children}</div>
       </div>

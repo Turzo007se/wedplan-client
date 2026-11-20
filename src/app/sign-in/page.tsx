@@ -70,17 +70,17 @@ function SignInContent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-4xl w-full items-center">
         {/* Left Narrative */}
         <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#fbf0f2] px-3.5 py-1 text-xs font-semibold text-[#8f3e4d]">
+          <div className="inline-flex items-center gap-2 rounded-full bg-tint px-3.5 py-1 text-xs font-semibold text-accent-strong">
             <Heart size={14} fill="currentColor" /> Welcome Back
           </div>
-          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#292526] leading-tight">
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-ink leading-tight">
             Continue Planning Your Forever Celebration.
           </h1>
-          <p className="text-base text-[#777174] leading-relaxed">
+          <p className="text-base text-muted leading-relaxed">
             Sign in to check the status of your booking requests, manage your vendor services, or review platform transactions.
           </p>
-          <div className="rounded-xl border border-[#ded3cf] bg-[#fdfbf9] p-5 text-xs text-[#514b4c] space-y-2">
-            <p className="font-semibold text-[#292526]">Role-Based Access:</p>
+          <div className="rounded-xl border border-outline bg-cream p-5 text-xs text-secondary-ink space-y-2">
+            <p className="font-semibold text-ink">Role-Based Access:</p>
             <p>• Customers can view booking statuses and cancel pending requests.</p>
             <p>• Vendors can accept/reject booking requests and upgrade to Premium.</p>
             <p>• Admins can review pending services and manage platform users.</p>
@@ -88,32 +88,32 @@ function SignInContent() {
         </div>
 
         {/* Right Form */}
-        <div className="rounded-2xl border border-[#eee5e1] bg-white p-8 shadow-xl">
-          <h2 className="font-serif text-2xl font-bold text-[#292526]">Sign In to WedPlan</h2>
-          <p className="text-xs text-[#777174] mt-1 mb-6">Enter your credentials to access your dashboard</p>
+        <div className="rounded-2xl border border-line bg-surface p-8 shadow-xl">
+          <h2 className="font-serif text-2xl font-bold text-ink">Sign In to WedPlan</h2>
+          <p className="text-xs text-muted mt-1 mb-6">Enter your credentials to access your dashboard</p>
 
           {error && (
-            <div className="mb-4 rounded-lg bg-rose-50 border border-rose-200 p-3 text-xs text-rose-700">
+            <div className="mb-4 rounded-lg bg-danger-surface border border-danger-line p-3 text-xs text-danger">
               {error}
             </div>
           )}
 
           <form onSubmit={submit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-[#292526] mb-1">Email Address</label>
+              <label className="block text-xs font-semibold text-ink mb-1">Email Address</label>
               <input
                 type="email"
                 required
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-[#ded3cf] px-3.5 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+                className="w-full rounded-lg border border-outline px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-semibold text-[#292526]">Password</label>
+                <label className="block text-xs font-semibold text-ink">Password</label>
               </div>
               <input
                 type="password"
@@ -121,7 +121,7 @@ function SignInContent() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-[#ded3cf] px-3.5 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+                className="w-full rounded-lg border border-outline px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
               />
             </div>
 
@@ -131,9 +131,9 @@ function SignInContent() {
 
             <div className="relative my-4 text-center">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#eee5e1]" />
+                <div className="w-full border-t border-line" />
               </div>
-              <span className="relative bg-white px-3 text-xs text-[#777174]">Or continue with</span>
+              <span className="relative bg-surface px-3 text-xs text-muted">Or continue with</span>
             </div>
 
             <Button
@@ -151,9 +151,9 @@ function SignInContent() {
               Continue with Google
             </Button>
 
-            <p className="text-center text-xs text-[#777174] pt-2">
+            <p className="text-center text-xs text-muted pt-2">
               New to WedPlan?{" "}
-              <Link href="/sign-up" className="font-semibold text-[#b65b69] hover:underline">
+              <Link href="/sign-up" className="font-semibold text-accent hover:underline">
                 Create an account
               </Link>
             </p>
@@ -168,7 +168,7 @@ function SignInContent() {
 
 export default function SignInPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-sm text-[#777174]">Loading sign-in...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-sm text-muted">Loading sign-in...</div>}>
       <SignInContent />
     </Suspense>
   );

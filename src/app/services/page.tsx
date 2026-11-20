@@ -58,29 +58,29 @@ function ServicesContent() {
     <main className="container mx-auto px-4 sm:px-6 py-12 min-h-[75vh]">
       {/* Header */}
       <div className="mb-10 text-center sm:text-left">
-        <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#b65b69] mb-2">
+        <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-accent mb-2">
           <Sparkles size={14} /> Curated Wedding Collections
         </div>
-        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#292526]">
+        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-ink">
           Explore Wedding Services
         </h1>
-        <p className="mt-2 text-sm sm:text-base text-[#777174] max-w-2xl">
+        <p className="mt-2 text-sm sm:text-base text-muted max-w-2xl">
           Discover vetted professionals to bring every dream detail of your celebration to life.
         </p>
       </div>
 
       {/* Advanced Search & Filter Bar */}
-      <div className="mb-10 rounded-2xl border border-[#eee5e1] bg-[#fbf7f3] p-5 shadow-sm">
+      <div className="mb-10 rounded-2xl border border-line bg-cream p-5 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Keyword Search */}
           <div className="relative">
-            <Search size={16} className="absolute left-3.5 top-3.5 text-[#8b8180]" />
+            <Search size={16} className="absolute left-3.5 top-3.5 text-muted" />
             <input
               type="text"
               placeholder="Search by service or keywords..."
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              className="w-full rounded-xl border border-[#ded3cf] bg-white pl-10 pr-4 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+              className="w-full rounded-xl border border-outline bg-surface pl-10 pr-4 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
             />
           </div>
 
@@ -89,7 +89,7 @@ function ServicesContent() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full rounded-xl border border-[#ded3cf] bg-white px-3.5 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+              className="w-full rounded-xl border border-outline bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
             >
               <option value="">All Categories</option>
               {CATEGORIES.map((cat) => (
@@ -102,23 +102,23 @@ function ServicesContent() {
 
           {/* Location Filter */}
           <div className="relative">
-            <MapPin size={16} className="absolute left-3.5 top-3.5 text-[#8b8180]" />
+            <MapPin size={16} className="absolute left-3.5 top-3.5 text-muted" />
             <input
               type="text"
               placeholder="Filter by city / location..."
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="w-full rounded-xl border border-[#ded3cf] bg-white pl-10 pr-4 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+              className="w-full rounded-xl border border-outline bg-surface pl-10 pr-4 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
             />
           </div>
 
           {/* Price Sorting */}
           <div className="relative">
-            <ArrowUpDown size={15} className="absolute left-3.5 top-3.5 text-[#8b8180]" />
+            <ArrowUpDown size={15} className="absolute left-3.5 top-3.5 text-muted" />
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="w-full rounded-xl border border-[#ded3cf] bg-white pl-10 pr-3.5 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+              className="w-full rounded-xl border border-outline bg-surface pl-10 pr-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
             >
               <option value="">Sort: Featured First</option>
               <option value="price_asc">Price: Low to High</option>
@@ -128,16 +128,16 @@ function ServicesContent() {
         </div>
 
         {/* Quick Category Chips */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-[#ede4e0]">
-          <span className="text-xs font-semibold text-[#777174] mr-1">Popular:</span>
+        <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-raised">
+          <span className="text-xs font-semibold text-muted mr-1">Popular:</span>
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(category === cat ? "" : cat)}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${
                 category === cat
-                  ? "bg-[#b65b69] text-white shadow-sm"
-                  : "bg-white text-[#514b4c] border border-[#ded3cf] hover:bg-[#f4ebe6]"
+                  ? "bg-brand text-white shadow-sm"
+                  : "bg-surface text-secondary-ink border border-outline hover:bg-raised"
               }`}
             >
               {cat}
@@ -146,7 +146,7 @@ function ServicesContent() {
           {(q || category || location || sort) && (
             <button
               onClick={resetFilters}
-              className="ml-auto inline-flex items-center gap-1 text-xs text-[#b65b69] hover:underline cursor-pointer"
+              className="ml-auto inline-flex items-center gap-1 text-xs text-accent hover:underline cursor-pointer"
             >
               <RotateCcw size={12} /> Reset filters
             </button>
@@ -158,7 +158,7 @@ function ServicesContent() {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3, 4, 5, 6].map((n) => (
-            <div key={n} className="h-80 rounded-xl bg-stone-100 animate-pulse border border-stone-200" />
+            <div key={n} className="h-80 rounded-xl bg-cream animate-pulse border border-outline" />
           ))}
         </div>
       ) : services.length > 0 ? (
@@ -169,10 +169,10 @@ function ServicesContent() {
         </div>
       ) : (
         /* Empty State */
-        <div className="rounded-2xl border border-dashed border-[#ded3cf] bg-[#fbf7f3] p-16 text-center">
-          <SlidersHorizontal size={36} className="mx-auto text-[#b65b69] mb-3" />
-          <h2 className="font-serif text-2xl font-bold text-[#292526]">No Services Found</h2>
-          <p className="mt-1 text-sm text-[#777174] max-w-md mx-auto">
+        <div className="rounded-2xl border border-dashed border-outline bg-cream p-16 text-center">
+          <SlidersHorizontal size={36} className="mx-auto text-accent mb-3" />
+          <h2 className="font-serif text-2xl font-bold text-ink">No Services Found</h2>
+          <p className="mt-1 text-sm text-muted max-w-md mx-auto">
             We couldn't find any approved services matching your current filters. Try adjusting your search keywords or location.
           </p>
           <Button variant="outline" className="mt-5" onClick={resetFilters}>
@@ -186,7 +186,7 @@ function ServicesContent() {
 
 export default function ServicesPage() {
   return (
-    <Suspense fallback={<div className="container mx-auto px-4 py-20 text-center text-sm text-[#777174]">Loading services...</div>}>
+    <Suspense fallback={<div className="container mx-auto px-4 py-20 text-center text-sm text-muted">Loading services...</div>}>
       <ServicesContent />
     </Suspense>
   );

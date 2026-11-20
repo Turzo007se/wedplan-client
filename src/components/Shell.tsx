@@ -2,9 +2,40 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Heart, Menu, X, UserRound, LogOut, LayoutDashboard, Settings, ChevronDown, CheckCircle2, AlertCircle } from "lucide-react";
+import { Heart, Menu, X, UserRound, LogOut, LayoutDashboard, Settings, ChevronDown, CheckCircle2, AlertCircle, Monitor, Sun, Moon } from "lucide-react";
 import { authClient, cacheApiToken, clearApiToken } from "@/lib/auth-client";
 import { api } from "@/lib/api";
+
+function ThemePicker() {
+  const [theme, setTheme] = useState("system");
+
+  useEffect(() => {
+    setTheme(document.documentElement.dataset.theme ?? "system");
+  }, []);
+
+  function changeTheme(value: string) {
+    setTheme(value);
+    if (value === "system") delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = value;
+    try {
+      if (value === "system") localStorage.removeItem("wedplan-theme");
+      else localStorage.setItem("wedplan-theme", value);
+    } catch {}
+  }
+
+  const Icon = theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
+
+  return (
+    <label className="flex h-10 items-center gap-1.5 rounded-lg border border-outline bg-surface px-2 text-ink">
+      <Icon size={16} aria-hidden="true" />
+      <select aria-label="Color theme" value={theme} onChange={(event) => changeTheme(event.target.value)} className="bg-surface py-1 text-xs font-medium">
+        <option value="system">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </label>
+  );
+}
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -60,25 +91,25 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[#eee5e1] bg-white/95 backdrop-blur-md transition-all">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-40 w-full border-b border-line bg-surface/95 backdrop-blur-md transition-all">
+      <div className="container mx-auto flex h-20 items-center justify-between px-0 sm:px-6">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 text-2xl font-serif font-bold text-[#292526] tracking-tight">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#fbf0f2] text-[#b65b69]">
+        <Link href="/" className="flex items-center gap-2 text-xl sm:text-2xl font-serif font-bold text-ink tracking-tight">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-tint text-accent">
             <Heart size={20} fill="currentColor" />
           </span>
-          <span>Wed<span className="text-[#b65b69]">Plan</span></span>
+          <span>Wed<span className="text-accent">Plan</span></span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#292526]">
-          <Link href="/" className="hover:text-[#b65b69] transition-colors">
+        <nav className="hidden md:flex items-center gap-3 lg:gap-8 text-sm font-medium text-ink">
+          <Link href="/" className="hover:text-accent transition-colors">
             Home
           </Link>
-          <Link href="/services" className="hover:text-[#b65b69] transition-colors">
+          <Link href="/services" className="hover:text-accent transition-colors">
             Browse Services
           </Link>
-          <a href="/#how" className="hover:text-[#b65b69] transition-colors">
+          <a href="/#how" className="hidden lg:inline hover:text-accent transition-colors">
             How It Works
           </a>
 
@@ -88,33 +119,33 @@ export function Header() {
               <button
                 type="button"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2.5 rounded-full border border-[#eee5e1] bg-[#fbf7f3] py-1.5 pl-2 pr-3.5 hover:bg-[#f5eeeb] transition-colors cursor-pointer"
+                className="flex items-center gap-2.5 rounded-full border border-line bg-cream py-1.5 pl-2 pr-3.5 hover:bg-raised transition-colors cursor-pointer"
               >
                 {user.image ? (
                   <img
                     src={user.image}
                     alt={user.name || "User"}
-                    className="h-8 w-8 rounded-full object-cover ring-2 ring-[#b65b69]/20"
+                    className="h-8 w-8 rounded-full object-cover ring-2 ring-accent/20"
                   />
                 ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#b65b69] text-white text-xs font-semibold">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-white text-xs font-semibold">
                     {(user.name || "U")[0].toUpperCase()}
                   </div>
                 )}
-                <span className="max-w-[130px] truncate text-xs font-semibold text-[#292526]">
+                <span className="max-w-[130px] truncate text-xs font-semibold text-ink">
                   {user.name || "My Account"}
                 </span>
-                <ChevronDown size={14} className={`text-[#777174] transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
+                <ChevronDown size={14} className={`text-muted transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
               </button>
 
               {/* Profile Dropdown Menu */}
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-64 rounded-xl border border-[#eee5e1] bg-white p-2 shadow-xl ring-1 ring-black/5 animate-in fade-in-0 zoom-in-95 duration-150">
-                  <div className="border-b border-[#eee5e1] px-3 py-2.5 mb-1">
-                    <p className="text-xs font-medium text-[#777174]">Signed in as</p>
-                    <p className="truncate text-sm font-semibold text-[#292526]">{user.name}</p>
-                    <p className="truncate text-xs text-[#777174]">{user.email}</p>
-                    <span className="inline-block mt-1.5 rounded bg-[#f4ebe6] px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase text-[#8f3e4d]">
+                <div className="absolute right-0 mt-2 w-64 rounded-xl border border-line bg-surface p-2 shadow-xl ring-1 ring-black/5 animate-in fade-in-0 zoom-in-95 duration-150">
+                  <div className="border-b border-line px-3 py-2.5 mb-1">
+                    <p className="text-xs font-medium text-muted">Signed in as</p>
+                    <p className="truncate text-sm font-semibold text-ink">{user.name}</p>
+                    <p className="truncate text-xs text-muted">{user.email}</p>
+                    <span className="inline-block mt-1.5 rounded bg-raised px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase text-accent-strong">
                       {user.role || "Member"}
                     </span>
                   </div>
@@ -122,7 +153,7 @@ export function Header() {
                   <Link
                     href="/dashboard"
                     onClick={() => setDropdownOpen(false)}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-[#292526] hover:bg-[#fbf7f3] hover:text-[#b65b69] transition-colors"
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-ink hover:bg-cream hover:text-accent transition-colors"
                   >
                     <LayoutDashboard size={16} />
                     <span>Dashboard</span>
@@ -131,18 +162,18 @@ export function Header() {
                   <Link
                     href="/dashboard?tab=profile"
                     onClick={() => setDropdownOpen(false)}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-[#292526] hover:bg-[#fbf7f3] hover:text-[#b65b69] transition-colors"
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-ink hover:bg-cream hover:text-accent transition-colors"
                   >
                     <Settings size={16} />
                     <span>Profile Settings</span>
                   </Link>
 
-                  <div className="my-1 border-t border-[#eee5e1]" />
+                  <div className="my-1 border-t border-line" />
 
                   <button
                     type="button"
                     onClick={logout}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-rose-600 hover:bg-rose-50 transition-colors text-left cursor-pointer"
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-danger hover:bg-danger-surface transition-colors text-left cursor-pointer"
                   >
                     <LogOut size={16} />
                     <span>Sign Out</span>
@@ -155,13 +186,13 @@ export function Header() {
             <div className="flex items-center gap-3">
               <Link
                 href="/sign-in"
-                className="px-4 py-2 text-sm font-semibold text-[#292526] hover:text-[#b65b69] transition-colors"
+                className="px-4 py-2 text-sm font-semibold text-ink hover:text-accent transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 href="/sign-up"
-                className="inline-flex items-center justify-center rounded-lg bg-[#b65b69] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#8f3e4d] transition-all"
+                className="inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-hover transition-all"
               >
                 Sign Up
               </Link>
@@ -169,68 +200,70 @@ export function Header() {
           )}
         </nav>
 
-        {/* Mobile menu trigger */}
-        <button
+        <div className="flex items-center gap-2">
+          <ThemePicker />
+          <button
           type="button"
-          className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg border border-[#eee5e1] text-[#292526]"
+          className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg border border-line text-ink"
           onClick={() => setOpen(!open)}
           aria-label="Toggle navigation menu"
         >
           {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer */}
       {open && (
-        <div className="md:hidden border-t border-[#eee5e1] bg-white px-6 py-5 shadow-lg space-y-4">
+        <div className="md:hidden border-t border-line bg-surface px-6 py-5 shadow-lg space-y-4">
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="block text-base font-medium text-[#292526] hover:text-[#b65b69]"
+            className="block text-base font-medium text-ink hover:text-accent"
           >
             Home
           </Link>
           <Link
             href="/services"
             onClick={() => setOpen(false)}
-            className="block text-base font-medium text-[#292526] hover:text-[#b65b69]"
+            className="block text-base font-medium text-ink hover:text-accent"
           >
             Browse Services
           </Link>
           <a
             href="/#how"
             onClick={() => setOpen(false)}
-            className="block text-base font-medium text-[#292526] hover:text-[#b65b69]"
+            className="block text-base font-medium text-ink hover:text-accent"
           >
             How It Works
           </a>
 
           {user ? (
-            <div className="border-t border-[#eee5e1] pt-4 space-y-3">
+            <div className="border-t border-line pt-4 space-y-3">
               <div className="flex items-center gap-3 pb-2">
                 {user.image ? (
                   <img src={user.image} alt={user.name} className="h-10 w-10 rounded-full object-cover" />
                 ) : (
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#b65b69] text-white font-bold">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-white font-bold">
                     {(user.name || "U")[0].toUpperCase()}
                   </div>
                 )}
                 <div>
-                  <div className="font-semibold text-[#292526]">{user.name}</div>
-                  <div className="text-xs text-[#777174] capitalize">{user.role} Dashboard</div>
+                  <div className="font-semibold text-ink">{user.name}</div>
+                  <div className="text-xs text-muted capitalize">{user.role} Dashboard</div>
                 </div>
               </div>
               <Link
                 href="/dashboard"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2 font-medium text-[#292526] hover:text-[#b65b69]"
+                className="flex items-center gap-2 font-medium text-ink hover:text-accent"
               >
                 <LayoutDashboard size={18} /> Dashboard
               </Link>
               <Link
                 href="/dashboard?tab=profile"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2 font-medium text-[#292526] hover:text-[#b65b69]"
+                className="flex items-center gap-2 font-medium text-ink hover:text-accent"
               >
                 <Settings size={18} /> Profile Settings
               </Link>
@@ -239,24 +272,24 @@ export function Header() {
                   setOpen(false);
                   logout();
                 }}
-                className="flex items-center gap-2 font-medium text-rose-600 pt-2"
+                className="flex items-center gap-2 font-medium text-danger pt-2"
               >
                 <LogOut size={18} /> Sign Out
               </button>
             </div>
           ) : (
-            <div className="border-t border-[#eee5e1] pt-4 flex flex-col gap-3">
+            <div className="border-t border-line pt-4 flex flex-col gap-3">
               <Link
                 href="/sign-in"
                 onClick={() => setOpen(false)}
-                className="w-full text-center py-2.5 rounded-lg border border-[#ded3cf] font-semibold text-[#292526]"
+                className="w-full text-center py-2.5 rounded-lg border border-outline font-semibold text-ink"
               >
                 Sign In
               </Link>
               <Link
                 href="/sign-up"
                 onClick={() => setOpen(false)}
-                className="w-full text-center py-2.5 rounded-lg bg-[#b65b69] font-semibold text-white"
+                className="w-full text-center py-2.5 rounded-lg bg-brand font-semibold text-white"
               >
                 Sign Up
               </Link>
@@ -276,7 +309,7 @@ export function Footer() {
           {/* Brand info */}
           <div className="md:col-span-1 space-y-4">
             <Link href="/" className="flex items-center gap-2 text-2xl font-serif font-bold text-white">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#b65b69] text-white">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-white">
                 <Heart size={16} fill="currentColor" />
               </span>
               <span>WedPlan</span>
@@ -337,16 +370,16 @@ export function Footer() {
               Get wedding inspiration and vendor highlights on our social channels.
             </p>
             <div className="flex flex-wrap gap-2 text-xs">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-[#b65b69] transition-colors">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-brand transition-colors">
                 Instagram
               </a>
-              <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-[#b65b69] transition-colors">
+              <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-brand transition-colors">
                 Pinterest
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-[#b65b69] transition-colors">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-brand transition-colors">
                 Facebook
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-[#b65b69] transition-colors">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#352f30] px-3 py-1.5 hover:bg-brand transition-colors">
                 Twitter
               </a>
             </div>
@@ -376,7 +409,7 @@ export function Toast({ message, type = "info", onClose }: { message: string; ty
   const isError = type === "error" || message.toLowerCase().includes("fail") || message.toLowerCase().includes("error") || message.toLowerCase().includes("invalid");
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl bg-[#282526] text-white px-5 py-3.5 shadow-2xl border border-white/10 animate-in slide-in-from-bottom-5 duration-200">
+    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl bg-ink text-white px-5 py-3.5 shadow-2xl border border-white/10 animate-in slide-in-from-bottom-5 duration-200">
       {isError ? (
         <AlertCircle size={18} className="text-rose-400 shrink-0" />
       ) : (

@@ -13,8 +13,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen flex flex-col bg-white text-[#292526] antialiased">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `try {
+          const theme = localStorage.getItem("wedplan-theme");
+          if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+        } catch {}` }} />
+      </head>
+      <body className="min-h-screen flex flex-col bg-surface text-ink antialiased">
         <Header />
         <div className="flex-1">{children}</div>
         <Footer />

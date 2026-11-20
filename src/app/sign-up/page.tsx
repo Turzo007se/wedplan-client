@@ -104,39 +104,39 @@ export default function SignUpPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-4xl w-full items-center">
         {/* Left Side: Brand Narrative */}
         <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#fbf0f2] px-3.5 py-1 text-xs font-semibold text-[#8f3e4d]">
+          <div className="inline-flex items-center gap-2 rounded-full bg-tint px-3.5 py-1 text-xs font-semibold text-accent-strong">
             <Heart size={14} fill="currentColor" /> Welcome to WedPlan
           </div>
-          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#292526] leading-tight">
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-ink leading-tight">
             Begin Your Wedding Journey With Confidence.
           </h1>
-          <p className="text-base text-[#777174] leading-relaxed">
+          <p className="text-base text-muted leading-relaxed">
             Create an account to browse verified wedding professionals, request event dates, or publish your wedding services to reaching hundreds of celebrating couples.
           </p>
 
-          <div className="space-y-3 pt-2 text-sm text-[#514b4c]">
+          <div className="space-y-3 pt-2 text-sm text-secondary-ink">
             <div className="flex items-center gap-2.5">
-              <CheckCircle2 size={18} className="text-[#b65b69]" />
+              <CheckCircle2 size={18} className="text-accent" />
               <span>Free customer accounts with direct inquiry tools</span>
             </div>
             <div className="flex items-center gap-2.5">
-              <CheckCircle2 size={18} className="text-[#b65b69]" />
+              <CheckCircle2 size={18} className="text-accent" />
               <span>Vendor accounts with up to 3 free published services</span>
             </div>
             <div className="flex items-center gap-2.5">
-              <CheckCircle2 size={18} className="text-[#b65b69]" />
+              <CheckCircle2 size={18} className="text-accent" />
               <span>Real-time booking management & status updates</span>
             </div>
           </div>
         </div>
 
         {/* Right Side: Form Card */}
-        <div className="rounded-2xl border border-[#eee5e1] bg-white p-8 shadow-xl">
-          <h2 className="font-serif text-2xl font-bold text-[#292526]">Create Your Account</h2>
-          <p className="text-xs text-[#777174] mt-1 mb-6">Enter your details to register on WedPlan</p>
+        <div className="rounded-2xl border border-line bg-surface p-8 shadow-xl">
+          <h2 className="font-serif text-2xl font-bold text-ink">Create Your Account</h2>
+          <p className="text-xs text-muted mt-1 mb-6">Enter your details to register on WedPlan</p>
 
           {error && (
-            <div className="mb-4 rounded-lg bg-rose-50 border border-rose-200 p-3 text-xs text-rose-700">
+            <div className="mb-4 rounded-lg bg-danger-surface border border-danger-line p-3 text-xs text-danger">
               {error}
             </div>
           )}
@@ -144,33 +144,33 @@ export default function SignUpPage() {
           <form onSubmit={submit} className="space-y-4">
             {/* Full Name */}
             <div>
-              <label className="block text-xs font-semibold text-[#292526] mb-1">Full Name *</label>
+              <label className="block text-xs font-semibold text-ink mb-1">Full Name *</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. Ayesha Rahman"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-lg border border-[#ded3cf] px-3.5 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+                className="w-full rounded-lg border border-outline px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
               />
             </div>
 
             {/* Email Address */}
             <div>
-              <label className="block text-xs font-semibold text-[#292526] mb-1">Email Address *</label>
+              <label className="block text-xs font-semibold text-ink mb-1">Email Address *</label>
               <input
                 type="email"
                 required
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-[#ded3cf] px-3.5 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+                className="w-full rounded-lg border border-outline px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-semibold text-[#292526] mb-1">
+              <label className="block text-xs font-semibold text-ink mb-1">
                 Password * (min 6 chars, 1 uppercase, 1 lowercase)
               </label>
               <input
@@ -179,17 +179,17 @@ export default function SignUpPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-[#ded3cf] px-3.5 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+                className="w-full rounded-lg border border-outline px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
               />
             </div>
 
             {/* Role Selection */}
             <div>
-              <label className="block text-xs font-semibold text-[#292526] mb-1">Account Role *</label>
+              <label className="block text-xs font-semibold text-ink mb-1">Account Role *</label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="w-full rounded-lg border border-[#ded3cf] bg-white px-3.5 py-2.5 text-sm text-[#292526] focus:border-[#b65b69] focus:outline-none"
+                className="w-full rounded-lg border border-outline bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
               >
                 <option value="customer">Customer (Looking to plan and book services)</option>
                 <option value="vendor">Vendor (Wedding professional providing services)</option>
@@ -198,7 +198,7 @@ export default function SignUpPage() {
 
             {/* Profile Image (Optional - ImgBB Upload) */}
             <div>
-              <label className="block text-xs font-semibold text-[#292526] mb-1">
+              <label className="block text-xs font-semibold text-ink mb-1">
                 Profile Image (Optional - uploaded via ImgBB)
               </label>
               <div className="flex items-center gap-4">
@@ -206,10 +206,10 @@ export default function SignUpPage() {
                   <img
                     src={imagePreview}
                     alt="Preview"
-                    className="h-12 w-12 rounded-full object-cover border-2 border-[#b65b69]"
+                    className="h-12 w-12 rounded-full object-cover border-2 border-accent"
                   />
                 ) : (
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#fbf7f3] border border-[#ded3cf] text-[#8b8180]">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cream border border-outline text-muted">
                     <ImagePlus size={20} />
                   </div>
                 )}
@@ -218,7 +218,7 @@ export default function SignUpPage() {
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
                     onChange={handleImageChange}
-                    className="text-xs text-[#777174] file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#f4ebe6] file:text-[#8f3e4d] hover:file:bg-[#eee1dc] cursor-pointer"
+                    className="text-xs text-muted file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-raised file:text-accent-strong hover:file:bg-raised cursor-pointer"
                   />
 
                 </div>
@@ -233,9 +233,9 @@ export default function SignUpPage() {
             {/* Google Authentication */}
             <div className="relative my-4 text-center">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#eee5e1]" />
+                <div className="w-full border-t border-line" />
               </div>
-              <span className="relative bg-white px-3 text-xs text-[#777174]">Or continue with</span>
+              <span className="relative bg-surface px-3 text-xs text-muted">Or continue with</span>
             </div>
 
             <Button
@@ -253,9 +253,9 @@ export default function SignUpPage() {
               Continue with Google
             </Button>
 
-            <p className="text-center text-xs text-[#777174] pt-2">
+            <p className="text-center text-xs text-muted pt-2">
               Already have an account?{" "}
-              <Link href="/sign-in" className="font-semibold text-[#b65b69] hover:underline">
+              <Link href="/sign-in" className="font-semibold text-accent hover:underline">
                 Sign In
               </Link>
             </p>

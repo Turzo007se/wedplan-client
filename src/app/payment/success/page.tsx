@@ -41,13 +41,13 @@ export default function PaymentSuccessPage() {
 
   return (
     <main className="container mx-auto flex min-h-[70vh] items-center justify-center px-4 py-20">
-      <div className="w-full max-w-lg space-y-6 rounded-3xl border border-[#eee5e1] bg-white p-10 text-center shadow-xl">
-        {status === "confirmed" && <CheckCircle2 className="mx-auto text-emerald-600" size={44} />}
-        {status === "pending" && <Loader2 className="mx-auto animate-spin text-[#b65b69]" size={36} />}
-        <h1 className="font-serif text-3xl font-bold text-[#292526]">
+      <div className="w-full max-w-lg space-y-6 rounded-3xl border border-line bg-surface p-10 text-center shadow-xl">
+        {status === "confirmed" && <CheckCircle2 className="mx-auto text-success" size={44} />}
+        {status === "pending" && <Loader2 className="mx-auto animate-spin text-accent" size={36} />}
+        <h1 className="font-serif text-3xl font-bold text-ink">
           {status === "confirmed" ? "Premium activated" : status === "pending" ? "Verifying your payment" : "Payment confirmation unavailable"}
         </h1>
-        <p role="status" className="text-sm text-[#777174]">
+        <p role="status" className="text-sm text-muted">
           {status === "confirmed" && "Stripe confirmed your payment. Your Premium plan is active."}
           {status === "pending" && "We are waiting for Stripe to confirm this Checkout session."}
           {status === "error" && "Check your subscription in the dashboard or reload this page to retry."}
